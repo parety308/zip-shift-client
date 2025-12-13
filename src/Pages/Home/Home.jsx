@@ -9,11 +9,11 @@ import Reviews from '../../component/Reviews/Reviews';
 const Home = () => {
     return (
         <div>
-        <Banner/>
-        <HowItWorks/>
-        <OurServices/>
-        <Brans/>
-       <Reviews/>
+            <Banner />
+            <HowItWorks />
+            <OurServices />
+            <Brans />
+            <Reviews />
         </div>
     );
 };

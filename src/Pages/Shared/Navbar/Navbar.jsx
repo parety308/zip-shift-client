@@ -1,14 +1,23 @@
-import React from 'react';
 import Logo from '../../../component/Logo/Logo';
 import { NavLink } from 'react-router';
+import useAuth from '../../../hooks/useAuth/useAuth';
 
 const Navbar = () => {
+    const { user, logOut, setUser } = useAuth();
+    const handleLogOut = () => {
+        logOut()
+            .then(() => {
+                setUser(null);
+            })
+            .catch(err => console.log(err));
+
+    }
     const links = <>
-        <li><NavLink to=''>Services</NavLink></li>
+        <li><NavLink to='/service'>Services</NavLink></li>
         <li><NavLink to='/coverage'>Coverage</NavLink></li>
-        <li><NavLink to=''>About Us</NavLink></li>
-        <li><NavLink to=''>Pricing</NavLink></li>
-        <li><NavLink to=''>Be a Rider</NavLink></li>
+        <li><NavLink to='/about-us'>About Us</NavLink></li>
+        <li><NavLink to='/send-parcel'>Send Parcel</NavLink></li>
+        <li><NavLink to='/pricing'>Pricing</NavLink></li>
     </>
     return (
         <div className="navbar bg-base-100 shadow-sm">
@@ -30,9 +39,16 @@ const Navbar = () => {
                     {links}
                 </ul>
             </div>
-            <div className="navbar-end">
-                <a className="btn">Button</a>
-            </div>
+
+            {
+                user ? <div className="navbar-end flex gap-4"> <NavLink onClick={handleLogOut} className="btn bg-lime-300">Sign Out</NavLink>
+                    <NavLink to='/be-rider' className="btn bg-lime-300">Be a Rider</NavLink>
+                </div>
+                    : (<div className="navbar-end flex gap-4">
+                        <NavLink to='/auth/login' className="btn bg-lime-300">Login</NavLink>
+                        <NavLink to='/be-rider' className="btn bg-lime-300">Be a Rider</NavLink></div>)
+            }
+
         </div>
     );
 };
