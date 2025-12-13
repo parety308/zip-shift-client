@@ -25,11 +25,12 @@ export const router = createBrowserRouter([
             },
             {
                 path: '/be-rider',
-                element:<PrivateRoutes><Rider/></PrivateRoutes>
+                element: <PrivateRoutes><Rider /></PrivateRoutes>
             },
             {
-                path:'/send-parcel',
-                element:<PrivateRoutes><SendParcel/></PrivateRoutes>
+                path: '/send-parcel',
+                element: <PrivateRoutes><SendParcel /></PrivateRoutes>,
+                loader: () => fetch('/serviceCenters.json').then(res => res.json())
             }
         ]
     },
