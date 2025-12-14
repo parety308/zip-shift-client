@@ -2,9 +2,17 @@ import React from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { useLoaderData } from 'react-router';
 import Swal from 'sweetalert2';
+import useAxiosSecure from '../../hooks/useAxiosSecure/useAxiosSecure';
 
 const SendParcel = () => {
-    const { register, handleSubmit, control, formState: { errors } } = useForm();
+    const { register,
+        handleSubmit,
+        control,
+        // formState: { errors }
+    } = useForm();
+
+    const axiosSecure = useAxiosSecure();
+
     const serviceCenters = useLoaderData();
     const duplicateServiceCenters = serviceCenters.map(c => c.region);
     const UniqueServiceCenters = [...new Set(duplicateServiceCenters)];
@@ -48,6 +56,13 @@ const SendParcel = () => {
             confirmButtonText: "Yes, take it!"
         }).then((result) => {
             if (result.isConfirmed) {
+
+                //save data on database 
+
+                axiosSecure.post('/parcels', data)
+                    .then(res => {
+                        console.log(res.data);
+                    })
                 Swal.fire({
                     title: "Accepted!",
                     text: "Your Parcel has been taken for delivery.",
