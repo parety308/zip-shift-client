@@ -1,8 +1,9 @@
 import React from 'react';
 import { useForm, useWatch } from 'react-hook-form';
-import { useLoaderData } from 'react-router';
+import { useLoaderData, useNavigate } from 'react-router';
 import Swal from 'sweetalert2';
 import useAxiosSecure from '../../hooks/useAxiosSecure/useAxiosSecure';
+import useAuth from '../../hooks/useAuth/useAuth';
 
 const SendParcel = () => {
     const { register,
@@ -10,9 +11,9 @@ const SendParcel = () => {
         control,
         // formState: { errors }
     } = useForm();
-
+    const navigate = useNavigate();
     const axiosSecure = useAxiosSecure();
-
+    const { user } = useAuth();
     const serviceCenters = useLoaderData();
     const duplicateServiceCenters = serviceCenters.map(c => c.region);
     const UniqueServiceCenters = [...new Set(duplicateServiceCenters)];
@@ -46,6 +47,7 @@ const SendParcel = () => {
                 cost = minCost + extraCost;
             }
         }
+        data.cost = cost;
         Swal.fire({
             title: "Agree with the Cost?",
             text: `You will be charged ${cost} taka`,
@@ -65,9 +67,10 @@ const SendParcel = () => {
                     })
                 Swal.fire({
                     title: "Accepted!",
-                    text: "Your Parcel has been taken for delivery.",
+                    text: "Your Parcel has been taken for delivery,Please Pay.",
                     icon: "success"
                 });
+                navigate('/dashboard/my-parcels')
             }
         });
 
@@ -113,12 +116,16 @@ const SendParcel = () => {
                         {/* Sender Name */}
                         <fieldset className='my-1 w-1/2'>
                             <label className="label text-black">Sender Name</label><br />
-                            <input type="text" {...register('senderName')} placeholder="Type here" className="input w-full" />
+                            <input
+                                type="text" {...register('senderName')}
+                                placeholder="Type here"
+                                className="input w-full"
+                                defaultValue={user?.displayName} />
                         </fieldset>
                         {/* Sender Email */}
                         <fieldset className='my-1 w-1/2'>
                             <label className="label text-black">Sender Email</label>
-                            <input type="email"  {...register('senderEmail')} placeholder="Type here" className="input w-full" />
+                            <input defaultValue={user?.email} type="email"  {...register('senderEmail')} placeholder="Type here" className="input w-full" />
                         </fieldset>
                         {/* Select Sender Region */}
                         <fieldset className="fieldset">
@@ -155,11 +162,8 @@ const SendParcel = () => {
                             <label className="label text-black">Sender Phone No</label><br />
                             <input type="text" {...register('senderPhone')} placeholder="Type here" className="input w-full" />
                         </fieldset>
-                        {/* Pick Up Instruction */}
-                        <fieldset className='my-1 w-1/2'>
-                            <label className="label text-black">Pick Up Instruction</label><br />
-                            <input type="text" {...register('pickUp')} placeholder="Type here" className="input w-full" />
-                        </fieldset>
+
+
                     </div>
                     {/* reciever details  */}
 
@@ -168,7 +172,12 @@ const SendParcel = () => {
                         <fieldset className='my-1 w-1/2'>
                             {/* Receiver Name */}
                             <label className="label text-black">Receiver Name</label><br />
-                            <input type="text" {...register('receiverName')} placeholder="Type here" className="input w-full" />
+                            <input
+                                type="text" {...register('receiverName')}
+                                placeholder="Type here"
+                                className="input w-full"
+
+                            />
                         </fieldset>
                         {/* Receiver Email */}
                         <fieldset className='my-1 w-1/2'>
@@ -207,10 +216,7 @@ const SendParcel = () => {
                             <label className="label text-black">Receiver Phone No</label><br />
                             <input type="text" {...register('receiverPhone')} placeholder="Type here" className="input w-full" />
                         </fieldset>
-                        <fieldset className='my-1 w-1/2'>
-                            <label className="label text-black">Delivery Instruction</label><br />
-                            <input type="text" {...register('delivery')} placeholder="Type here" className="input w-full" />
-                        </fieldset>
+
                     </div>
 
                 </div>
